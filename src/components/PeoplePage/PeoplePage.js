@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import ItemList from '../ItemList';
-import PersonDetails from '../PersonDetails';
+import ItemDetails, { Record } from '../ItemDetails';
 import ErrorBoundary from '../ErrorBoundary';
+import SwapiService from '../../services/swapi-service';
 import './people-page.css';
 
 import Row from '../Row';
@@ -11,6 +12,8 @@ export default class PeoplePage extends Component {
         selectedPerson: 1
     };
 
+    swapiService = new SwapiService();
+
     onPersonSelected = id => {
         this.setState({
             selectedPerson: id
@@ -18,18 +21,34 @@ export default class PeoplePage extends Component {
     };
 
     render() {
-        const itemList = (
-            <ItemList
-                onItemSelected={this.onPersonSelected}
-                getData={this.props.getData}
-                renderItem={this.props.renderItem}
-            />
-        );
-        const itemData = <PersonDetails personId={this.state.selectedPerson} />;
+        const {
+            getPerson,
+            getStarShip,
+            getPersonImage,
+            getStarShipImage
+        } = this.swapiService;
 
         return (
             <ErrorBoundary>
-                <Row left={itemList} right={itemData} />
+                <Row
+                    left={
+                        <ItemList
+                            onItemSelected={this.onPersonSelected}
+                            getData={this.props.getData}
+                            renderItem={this.props.renderItem}
+                        />
+                    }
+                    right={
+                        <ItemDetails
+                            itemId={11}
+                            getData={getPerson}
+                            getImageUrl={getPersonImage}
+                        >
+                            <Record field='gender' label='Gender' />
+                            <Record field='eyeColor' label='Eye color' />
+                        </ItemDetails>
+                    }
+                />
             </ErrorBoundary>
         );
     }

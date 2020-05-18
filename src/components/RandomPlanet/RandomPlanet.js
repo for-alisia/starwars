@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
+import './random-planet.css';
+
 import SwapiService from '../../services/swapi-service';
 import Spinner from '../Spinner';
 import defaultPlanet from './default-planet.jpg';
-
-import './random-planet.css';
 import ErrorIndicator from '../ErrorIndicator/ErrorIndicator';
 
 export default class RandomPlanet extends Component {
@@ -14,12 +14,13 @@ export default class RandomPlanet extends Component {
         loading: true,
         error: false
     };
-
+    // Метод жизненного цикла, который происходит сразу после завершения стадии рендеринга (здесь можно выполнять сетевые запросы и все side effects)
     componentDidMount() {
         this.updatePlanet();
         this.interval = setInterval(this.updatePlanet, 10000);
     }
 
+    // Метод жизненного цикла, который происходит перед удалением компонента (здесь надо убирать все ненужное, что могло остаться от компонента - setInterval, например)
     componentWillUnmount() {
         clearInterval(this.interval);
     }
@@ -32,13 +33,14 @@ export default class RandomPlanet extends Component {
         this.setState({ img });
     };
 
-    onError = err => {
+    onError = () => {
         this.setState({
             error: true,
             loading: false
         });
     };
 
+    // Обновляем планету
     updatePlanet = () => {
         const id = Math.floor(Math.random() * 25 + 3);
         //const id = 12000;
@@ -70,9 +72,10 @@ export default class RandomPlanet extends Component {
 }
 
 const PlanetView = ({ planet, img }) => {
-    const { id, name, population, rotationPeriod, diameter } = planet;
+    const { name, population, rotationPeriod, diameter } = planet;
 
     return (
+        // ReactFragment удобно использовать, когда из компонента нужно вернуть несколько блоков, а оборачивать их в один нецелесообразно
         <React.Fragment>
             <img className='planet-image' src={img} alt={name} />
             <div>
